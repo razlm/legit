@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  keycloak:
+    image: jboss/keycloak:16.1.1
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    volumes:
+      - "./keycloak/data:/opt/jboss/keycloak/standalone/data"
+    networks:
+      - keycloak-network
+
+  http-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    networks:
+      - keycloak-network
+    depends_on:
+      - keycloak
+
+networks:
+  keycloak-network:
+
